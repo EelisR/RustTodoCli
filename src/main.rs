@@ -2,7 +2,7 @@ pub mod todo;
 use todo::Todo;
 use std::io;
 
-use crate::todo::{print_todos, add_todo, uncomplete_todo, complete_todo, delete_todo};
+use crate::todo::{print_todos, add_todo, uncomplete_todo, complete_todo, delete_todo, TodoCommand};
 
 fn main() {
     let mut todos: Vec<Todo> = Vec::new();
@@ -14,17 +14,19 @@ fn main() {
         io::stdin().read_line(&mut input).unwrap();
 
         let mut parts = input.split_whitespace();
-        let command = parts.next().unwrap();
+        let command_word = parts.next().unwrap();
+        let command = TodoCommand::from_str(command_word);
         let word = parts.next();
+
         match command {
-        "quit" => break,
-            "add" => add_todo(&mut todos, word),
-            "list" => print_todos(&todos),
-            "uncomplete" => uncomplete_todo(&mut todos, word),
-            "complete" => complete_todo(&mut todos, word),
-            "delete" => delete_todo(&mut todos, word),
-            "help" => println!("Commands: add <Title>, list, complete <id>, delete <id>, help, quit"),
-            _ => println!("Unknown command. Type 'help' for a list of commands."),
+            TodoCommand::Quit => break,
+            TodoCommand::Add => add_todo(&mut todos, word),
+            TodoCommand::List => print_todos(&todos),
+            TodoCommand::Complete => complete_todo(&mut todos, word),
+            TodoCommand::Uncomplete => uncomplete_todo(&mut todos, word),
+            TodoCommand::Delete => delete_todo(&mut todos, word),
+            TodoCommand::Help => println!("Commands: add <Title>, list, complete <id>, delete <id>, help, quit"),
+            TodoCommand::InputError => println!("Unknown command. Type 'help' for a list of commands."),
         }
 
     }

@@ -6,10 +6,32 @@ pub struct Todo {
 
 
 pub enum TodoCommand {
-    Add(Todo),
+    Add,
     List,
-    Complete(i32),
-    Delete(i32),
+    Complete,
+    Uncomplete,
+    Delete,
+    Quit,
+    Help,
+    InputError
+}
+
+#[derive(Debug)]
+struct InputError;
+
+impl TodoCommand {
+    pub fn from_str(s: &str) -> TodoCommand {
+        match s {
+            "add" => TodoCommand::Add,
+            "list" => TodoCommand::List,
+            "complete" => TodoCommand::Complete,
+            "uncomplete" => TodoCommand::Uncomplete,
+            "delete" => TodoCommand::Delete,
+            "quit" => TodoCommand::Quit,
+            "help" => TodoCommand::Help,
+            _ => TodoCommand::InputError,
+        }
+    }
 }
 
 pub fn add_todo(todos: &mut Vec<Todo>, title: Option<&str>) {
